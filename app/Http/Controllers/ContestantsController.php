@@ -18,21 +18,21 @@ class ContestantsController extends Controller
         {
             $contestants = DB::table('contestants')->select('id','contestant_no', 'first_name', 'middle_name', 'last_name')->get();
             $contestants_info = DB::table('contestants')->where('id', $id)->get();
-            return view('contestants/show')
+            return view('contestants.show')
                 ->with('contestants', $contestants)
                 ->with('contestants_info', $contestants_info);
 
         }
         $contestants = DB::table('contestants')->select('id','contestant_no', 'first_name', 'middle_name', 'last_name')->get();
         $contestants_info = DB::table('contestants')->where('id', 1)->get();
-        return view('contestants/show')
+        return view('contestants.show')
             ->with('contestants', $contestants)
             ->with('contestants_info', $contestants_info);
     }
 
     public function create()
     {
-        return view('contestants/create');
+        return view('contestants.create');
     }
 
     public function store(Request $request)

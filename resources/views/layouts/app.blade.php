@@ -68,10 +68,18 @@
             <nav class="mt-2">
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                     <li class="nav-item">
-                        <a href="{{ route('contestants.contestants') }}" class="nav-link active">
+                        <a href="{{ route('event.show') }}" class="nav-link active">
                             <i class="nav-icon fas fa-th"></i>
                             <p>
-                                Configure Event
+                                Event
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('categories.show') }}" class="nav-link active">
+                            <i class="nav-icon fas fa-th"></i>
+                            <p>
+                                Categories
                             </p>
                         </a>
                     </li>
@@ -103,13 +111,50 @@
 <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
 <script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('dist/js/adminlte.min.js') }}"></script>
+
+
+{{-- category percentage script --}}
 <script>
-    $(document).on('click','.deleteUser',function(){
-        var userID=$(this).attr('data-userid');
-        $('#app_id').val(userID);
-        $('#applicantDeleteModal').modal('show');
+
+    $(function () {
+       
+        $('#myModal').on('shown.bs.modal', function (e) {
+            $('#catPers').on('input', function () {
+                if ($(this).val() == '') {
+
+                } else {
+                    var max = parseInt(document.getElementById('remaining').innerText);
+                    var min = parseInt($(this).attr('min'));
+                    if ($(this).val() > max) {
+                        $(this).val(max);
+                    } else if ($(this).val() < min) {
+                        $(this).val(min);
+                    }
+                    var x = parseInt(document.getElementById('remaining').innerText);
+                    var y = parseInt(document.getElementById('catPers').value);
+                    var z = x - y;
+                    document.getElementById('p1').textContent = z;
+                }
+            });
+            $('#catPers').change(function () {
+                if ($(this).val() == '') {
+
+                } else {
+                    var max = parseInt(document.getElementById('remaining').innerText);
+                    var min = parseInt($(this).attr('min'));
+                    if ($(this).val() > max) {
+                        $(this).val(max);
+                    } else if ($(this).val() < min) {
+                        $(this).val(min);
+                    }
+                    var x = parseInt(document.getElementById('remaining').innerText);
+                    var y = parseInt(document.getElementById('catPers').value);
+                    var z = x - y;
+                    document.getElementById('p1').textContent = z;
+                }
+            });
+        });
     });
 </script>
-
 </body>
 </html>

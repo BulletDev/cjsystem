@@ -9,9 +9,9 @@
                 <a href="{{ route('contestants.create') }}" class="btn btn-primary">Add Contestant</a>
             </div>
         </div>
-        <div class="row mb-2 pt-4 row-eq-height">
+        <div class="row mb-2 pt-4">
             <div class="col-sm-12 col-lg-6">
-                <div class="card h-100">
+                <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Contestants</h3>
                     </div>

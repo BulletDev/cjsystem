@@ -11,7 +11,7 @@
 |
 */
 
-
+use App\Http\Controllers\CategoriesController;
 
 Auth::routes();
 
@@ -30,6 +30,31 @@ Route::group(['middleware' => ['web','auth']], function (){
     });
 });
 
+// Event Routes
+Route::get('event/', 'EventController@index')->name('event.show');
+Route::get('event/edit/{id}', 'EventController@edit')->name('event.edit.id');
+
+Route::post('event/update/{id}', 'EventController@update')->name('event.update.id');
+
+// Categories Routes
+// Route::get('categories/{id}', function ($id = null) {
+//     if($id = null){
+//         redirect()->action('CategoriesController@index');
+//     }
+//     else{
+//         redirect()->action('CategoriesController@show');
+//     }
+// })->name('categories.show');
+
+Route::get('categories/{id?}', 'CategoriesController@index')->name('categories.show');
+Route::get('categories/create', 'CategoriesController@create')->name('categories.create');
+Route::get('categories/edit/{id}', 'CategoriesController@edit')->name('categories.edit.id');
+
+Route::post('categories/store', 'CategoriesController@store')->name('categories.store');
+Route::post('categories/update/{id}','CategoriesController@update')->name('categories.update.id');
+Route::post('categories/delete/{id}', 'CategoriesController@destroy')->name('categories.destroy.id');
+
+// Contestants Routes
 Route::get('contestants/', 'ContestantsController@index')->name('contestants.contestants');
 Route::get('contestants/show/{id}', 'ContestantsController@index')->name('contestants.show');
 Route::get('contestants/create', 'ContestantsController@create')->name('contestants.create');
@@ -38,5 +63,3 @@ Route::get('contestants/edit/{id}', 'ContestantsController@edit')->name('contest
 Route::post('contestants/store', 'ContestantsController@store')->name('contestants.store');
 Route::post('contestants/update/{id}', 'ContestantsController@update')->name('contestants.update');
 Route::post('contestants/delete/{id}','ContestantsController@destroy')->name('contestants.destroy.id');
-
-Route::get('configure/', 'Configure@index')->name('configure');
