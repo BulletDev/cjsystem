@@ -1,21 +1,30 @@
 @extends('layouts.app')
 @section('content')
 
-<div class="container-fluid p-4 content-row">
-    <div class="row pt-4">
-        <div class="col-md-6 float-left">
+<div class="container-fluid content-row p-4">
+    <div class="row mb-2">
+        {{-- category table --}}
+        <div class="col-sm-12 col-lg-6 float-right" id="colCat">
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Categories</h3>
-                    <button type="button" class="btn btn-success btn-sm float-right" data-toggle="modal" data-target="#myModal" id="open"><i class="fa fa-plus"></i></button>
+                    <div class="card-tools">
+                        <div class="input-group input-group-sm" style="width: 40px;">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-success btn-sm float-right" data-toggle="modal"
+                                    data-target="#myModal" id="open"><i class="fa fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <!-- /.card-header -->
-                <div class="card-body">
-                    <table class="table">
+                <div class="card-body table-responsive p-0">
+                    <table class="table table-head-fixed text-nowrap table-hover">
                         <thead>
                             <tr>
                                 <th>Category</th>
                                 <th>Percentage</th>
+                                <th></th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -23,14 +32,20 @@
                             @php
                                 $total =0;
                             @endphp
+                            
                             @foreach($data as $row)
                                 <tr>
-                                    <td><a href="{{ route('categories.show', $row->id) }}">{{ $row->category }}</a></td>
+                                    <td>
+                                        <a id="getAllData" href="{{ route('categories.show', [$row->id, $row->category]) }}">{{ $row->category }}</a>
+                                        {{-- href="{{ route('categories.show', $row->id) }}" --}}
+                                    </td>
                                     <td>{{ $row->percentage }}</td>
-                                    <td class="row">
-                                        <a href="{{ route('categories.edit.id', $row->id) }}"
-                                            class="btn-sm btn-primary"><i class="fa fa-edit"></i></a>
-                                        <form action="{{ route('categories.destroy.id', $row->id) }}" method="post">
+                                    <td><a href="{{ route('categories.edit.id', $row->id) }}"
+                                            class="btn-sm btn-primary"><i class="fa fa-edit"></i></a></td>
+                                    <td>
+                                        <form
+                                            action="{{ route('categories.destroy.id', $row->id) }}"
+                                            method="post">
                                             {{ csrf_field() }}
                                             <button type="submit" class="btn-sm btn-danger">
                                                 <i class="fa fa-trash"></i>
@@ -46,25 +61,40 @@
                         <tfoot>
                             <tr>
                                 <td>Total Percentage: </td>
-                            <td id="totalPercentage">{{ $total }}</td>
+                                <td id="totalPercentage">{{ $total }}</td>
                             </tr>
                         </tfoot>
+                        </tbody>
                     </table>
                 </div>
+                <!-- /.card-body -->
             </div>
+            <!-- /.card -->
         </div>
-        <div class="col-md-6 float-left">
+
+        {{-- criteria table --}}
+        <div class="col-sm-12 col-lg-6 float-right" id="colCrit">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Criteria</h3>
+                        <h3 class="card-title">{{ $dataCategory }}</h3>
+                    
+                    <div class="card-tools">
+                        <div class="input-group input-group-sm" style="width: 40px;">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-success btn-sm float-right" data-toggle="modal"
+                                    data-target="#criteriaModal" id="critOpen"><i class="fa fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <!-- /.card-header -->
-                <div class="card-body">
-                    <table class="table">
+                <div class="card-body table-responsive p-0">
+                    <table id="critTable" class="table table-head-fixed text-nowrap">
                         <thead>
                             <tr>
                                 <th>Criteria</th>
                                 <th>Percentage</th>
+                                <th></th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -83,14 +113,13 @@
                                     </td>
                                     <td>
                                         <form
-                                        action="{{ route('categories.destroy.id', $rowCriteria->id) }}"
-                                        method="post">
-                                        <button type="submit" class="btn-sm btn-flat btn-danger delete col"
-                                            data-confirm="Are you sure to delete this item?">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </td>
+                                            action="{{ route('categories.destroy.id', $rowCriteria->id) }}"
+                                            method="post">
+                                            <button type="submit" class="btn-sm btn-danger">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
                                 </tr>
                                 @php
                                     $totalCriteria += $rowCriteria->percentage
@@ -99,71 +128,19 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                            <td>Total Percentage: {{ $totalCriteria }}</td>
+                                <td>Total Percentage: </td>
+                                <td id="totalCritPercentage">{{ $totalCriteria }}</td>
                             </tr>
                         </tfoot>
                     </table>
                 </div>
+                <!-- /.card-body -->
             </div>
+            <!-- /.card -->
         </div>
     </div>
 </div>
 
-
-{{-- create category modal --}}
-<form method="post" action="{{ route('categories.store') }}" id="form">
-    {{ csrf_field() }}
-    <!-- Modal -->
-    <div class="modal" tabindex="-1" role="dialog" id="myModal">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="alert alert-danger" style="display:none"></div>
-                <div class="modal-header">
-
-                    <h5 class="modal-title">Add Category</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="form-group col-md-8">
-                            <label for="category">Category</label>
-                            <input type="text" class="form-control" name="category" id="category">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-4">
-                            <label for="percentage">Percentage</label>
-                            <input type="number" class="form-control" min="0" name="percentage" id="catPers" autocomplete="off" required value="0">
-                        </div>
-                    </div>
-                    <div class="row">
-                        @php
-                            $sum=0;
-                            $remaining = 0 ;
-                        @endphp
-                        @foreach ($data as $row)
-                            @php
-                                $sum += $row->percentage;
-                                $remaining = 100 - $sum;
-                            @endphp
-                        @endforeach
-                        <div class="form-group col-md-8">
-                            <p>Remaining Percentage: </p><p id="p1">{{ $remaining }}</p>
-                            <div style="display:none" id="remaining">{{ $remaining }}</div>
-                        </div>
-                        
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <input type="submit" class="btn btn-success" id="submit" value='Save'>
-                </div>
-            </div>
-        </div>
-    </div>
-</form>
-{{-- /create category modal --}}
-
+@include('categories.category_modal')
+@include('categories.criteria_modal')
 @endsection

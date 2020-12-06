@@ -16,11 +16,7 @@ use App\Http\Controllers\CategoriesController;
 Auth::routes();
 
 Route::group(['middleware' => ['web','auth']], function (){
-    Route::get('/', function () {
-        return view('welcome');
-    });
-
-    Route::get('/home', function (){
+    Route::get('/', function (){
        if (Auth::user()->admin == 0){
            return view('home');
        } else{
@@ -37,16 +33,7 @@ Route::get('event/edit/{id}', 'EventController@edit')->name('event.edit.id');
 Route::post('event/update/{id}', 'EventController@update')->name('event.update.id');
 
 // Categories Routes
-// Route::get('categories/{id}', function ($id = null) {
-//     if($id = null){
-//         redirect()->action('CategoriesController@index');
-//     }
-//     else{
-//         redirect()->action('CategoriesController@show');
-//     }
-// })->name('categories.show');
-
-Route::get('categories/{id?}', 'CategoriesController@index')->name('categories.show');
+Route::get('categories/{id?}/{name?}', 'CategoriesController@index')->name('categories.show');
 Route::get('categories/create', 'CategoriesController@create')->name('categories.create');
 Route::get('categories/edit/{id}', 'CategoriesController@edit')->name('categories.edit.id');
 

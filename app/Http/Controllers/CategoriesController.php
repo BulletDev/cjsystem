@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class CategoriesController extends Controller
+class CategoriesController extends Controller   
 {
     public function __construct()
     {
@@ -17,21 +17,32 @@ class CategoriesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($id = null)
+    public function index($id = null, $name = null)
     {   
-        if(!$id){
-            $dataCriteria = DB::table('criteria')->where('category_id', '=', $id)->get();
+        if(!$id AND !$name){
             $data = DB::table('categories')->get();
+            $dataCriteria = DB::table('criteria')
+            ->where('category_id', '=', 1)
+            ->get();
+            $name = DB::table('categories')->first();
+            
             return view('categories.show')
             ->with('data', $data)
-            ->with('dataCriteria', $dataCriteria);
+            ->with('dataCriteria', $dataCriteria)
+            ->with('dataCategory', $name->category);
+            
         }
         else{
-            $dataCriteria = DB::table('criteria')->where('category_id', '=', 1)->get();
+
             $data = DB::table('categories')->get();
+            $dataCriteria = DB::table('criteria')
+            ->where('category_id', '=', $id)
+            ->get();
+
             return view('categories.show')
             ->with('data', $data)
-            ->with('dataCriteria', $dataCriteria);
+            ->with('dataCriteria', $dataCriteria)
+            ->with('dataCategory', $name);
         }
 
     }
@@ -72,6 +83,26 @@ class CategoriesController extends Controller
         }
     }
 
+    public function storeCriteria(Request $request)
+    {
+        $this->validate($request,[
+            'criteria' => 'required',
+            'percentage' => 'required|between:0,99.99'
+        ]);
+
+        $sum = DB::table('criteria')->sum('percentage');
+        if ($sum+$request->percentage > 100 ) {
+            return redirect()->back()->with('alert', 'The percentage exceeded. Please try again.');
+        }
+        else {
+            DB::table('criteria')->insert([
+                'category_id' => $request->category_id,
+                'criteria' => $request->criteria,
+                'percentage' => $request->percentage    
+            ]);
+            return redirect()->route('criteria.show')->with('success', 'Criteria added successfully');
+        }
+    }
     /**
      * Display the specified resource.
      *
